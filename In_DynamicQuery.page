@@ -1,0 +1,74 @@
+<apex:page controller="INDynamicQueryController" showHeader="false" sidebar="false">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css"/>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        function GetObjectFieldDetails(){
+            GetFieldList();
+        }
+        
+    </script>
+    <div class="container">
+        <apex:form >
+            <div class="row">
+                <div class="col-md-12">
+                    <apex:selectList value="{!value}" size="1" onchange="GetObjectFieldDetails();">
+                        <apex:selectOptions value="{!ObjectList}"></apex:selectOptions>
+                    </apex:selectList>
+                    <button onclick="Query();return false;">Query</button>
+                </div>
+                <div class="col-md-12">
+                    <apex:outputPanel id="opFieldDetails">
+                        <script>
+                            function Query(){
+                               var checkitems=[];
+                               $("input.chkbox:checked").each(function(){
+                                   checkitems.push($(this).val());
+                               });
+                               
+                               var details=checkitems.join();
+                               
+                               console.log(details);
+                               MakeQuery(details);
+                               return false;
+                               
+                            }
+                        </script>
+                        <table class="table">
+                            <tr>
+                                <td>Fieldname</td>
+                                <td>Description</td>
+                                <td>Selection</td>
+                            </tr>
+                            <apex:repeat value="{!details}" var="fieldetails">
+                                <tr>
+                                    <td>{!fieldetails.fieldname}</td>
+                                    <td>{!fieldetails.fieldtype}</td>
+                                    <td><input class="chkbox" value="{!fieldetails.fieldApiname}" type="checkbox"/></td>
+                                </tr>
+                            </apex:repeat>
+                        </table>
+                         <apex:actionFunction name="MakeQuery" action="{!GetData}" rerender="opRecords">
+                            <apex:param name="param1" assignTo="{!fields}" value=""></apex:param>
+                        </apex:actionFunction>
+                    </apex:outputPanel>
+                </div>
+                <div class="col-md-12">
+                    <apex:outputPanel id="opRecords">
+                        <apex:pageblock >
+                        	<apex:pageBlockTable value="{!lstObjs}" var="rec">
+                            	<apex:repeat value="{!lstFlds}" var="fld">
+                                	<apex:column value="{!rec[fld]}"/>
+                                </apex:repeat>
+                            </apex:pageBlockTable>        
+                        </apex:pageblock>
+                    </apex:outputPanel>
+                </div>
+            </div>
+            <apex:actionFunction name="GetFieldList" action="{!FieldList}" rerender="opFieldDetails" >
+            </apex:actionFunction>
+            
+           
+            
+        </apex:form>
+    </div>
+</apex:page>

@@ -1,0 +1,41 @@
+@istest
+public class TestDynamicQuery {
+    
+    @testSetup 
+    static void Setup(){
+        Contact cc=new Contact(
+            Lastname='Clarke',
+            Birthdate=Date.parse('03/29/1986'),
+            DoNotCall=true,
+            LeadSource='None'
+        );
+        Account acc=new Account(
+            Name='MS',
+            NumberOfEmployees=1
+        );
+        insert acc;
+        insert cc;
+    }
+    
+    testmethod static void getObjectList(){
+        INDynamicQueryController dyno=new INDynamicQueryController();
+        dyno.value='Contact';
+        test.startTest();
+        dyno.fields='Birthdate,Name,DoNotCall,LeadSource';
+        dyno.getObjectList();
+        dyno.FieldList();
+        dyno.GetData();
+        test.stopTest();
+    }
+    
+    testmethod static void getObjectListAcc(){
+        INDynamicQueryController dyno=new INDynamicQueryController();
+        dyno.value='Account';
+        test.startTest();
+        dyno.fields='NumberOfEmployees';
+        dyno.getObjectList();
+        dyno.FieldList();
+        dyno.GetData();
+        test.stopTest();
+    }
+}
